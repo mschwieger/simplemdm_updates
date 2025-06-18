@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # SimpleMDM Script
-# Version: 2.2.0
+# Version: 2.3.0
 #
 # MIT License
 # Copyright (c) 2024 Your Name Here
@@ -33,8 +33,9 @@
 # - 2024-06-12: Names and IDs for devices, device groups, assignment groups in output
 # - 2024-06-12: "next" message prints without leading dot
 # - 2024-06-12: Sleep and healthcheck start moved outside main; timestamps added
+# - 2024-06-12: Sleep delay now settable via SLEEP_MAX in .env
 
-SCRIPT_VERSION="2.2.0"
+SCRIPT_VERSION="2.3.0"
 
 # --- Argument Parsing ---
 NOSLEEP=0
@@ -244,8 +245,10 @@ main() {
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Script started"
 
 # SLEEP cycle before running main
+: "${SLEEP_MAX:=14400}"  # Use value from .env or default to 14400 (4 hours) if unset
+
 if [[ "$NOSLEEP" -eq 0 ]]; then
-    SLEEP=$(( RANDOM % 14400 ))
+    SLEEP=$(( RANDOM % SLEEP_MAX ))
     echo "Sleeping for $SLEEP seconds before starting main logic..."
     sleep "$SLEEP"
 else
